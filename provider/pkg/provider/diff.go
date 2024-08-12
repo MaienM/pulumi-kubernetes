@@ -28,6 +28,8 @@ func (k *kubeProvider) forceNewProperties(obj *unstructured.Unstructured) []stri
 				props = append(props, kindFields...)
 			} else if clients.IsConfigMap(obj) && !k.enableConfigMapMutable {
 				props = append(props, properties{".binaryData", ".data"}...)
+			} else if clients.IsSecret(obj) && !k.enableSecretMutable {
+				props = append(props, properties{".stringData", ".data"}...)
 			}
 		}
 	}
@@ -151,8 +153,6 @@ var core = _versions{
 		},
 		"Secret": properties{
 			".type",
-			".stringData",
-			".data",
 		},
 		"Service": properties{
 			".spec.clusterIP",
